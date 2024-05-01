@@ -1,9 +1,13 @@
 import puppeteer, { Page } from 'puppeteer';
 import 'dotenv/config'
 import Credentials from './types/credentials';
+import parseArchives from './parsers/archives';
+import parseCurrent from './parsers/current';
+import fs from 'fs'
+import { callWebhook } from './utils/discordInteractions';
 
 function getInformations(): Credentials {
-  return { email: process.env.EMAIL, password: process.env.PASSWORD }
+  return { email: process.env.EMAIL, password: process.env.PASSWORD, webhook: process.env.WEBHOOK_URL }
 }
 
 async function navigateToGenote(page: Page, user: Credentials) {
@@ -21,14 +25,11 @@ async function navigateToGenote(page: Page, user: Credentials) {
   // Wait and click on first result
   const searchResultSelector = '.btn-submit'
   await page.waitForSelector(searchResultSelector);
-  await page.click(searchResultSelector);
 
-  await page.waitForNavigation();
-}
-
-async function navigateToNoteList(page: Page) {
-  await page.goto('https://www.usherbrooke.ca/genote/application/etudiant/cours.php');
-  await page.waitForNavigation();
+  await Promise.all([
+    page.click(searchResultSelector),
+    page.waitForNavigation()
+  ])
 }
 
 async function main() {
@@ -40,13 +41,32 @@ async function main() {
 
   await navigateToGenote(page, user);
 
-  await navigateToNoteList(page);
+  await page.goto('https://www.usherbrooke.ca/genote/application/etudiant/cours.php');
 
-  // Locate the full title with a unique string
-  const fullTitle = await page.title();
+  let resultCurrent = await parseCurrent(page);
+  if (resultCurrent.length === 0) {
+    resultCurrent = await parseArchives(page, 5);
+  }
 
-  // Print the full title
-  console.log('The title of this blog post is "%s".', fullTitle);
+  try {
+    let file = fs.readFileSync('result.json');
+    let oldResults = JSON.parse(file.toString())
+    for (let i = 0; i < resultCurrent.length; i++) {
+      let newResult = resultCurrent[i];
+      let oldResult = oldResults[i];
+
+      if (newResult.emptyNoteAmount != oldResult.emptyNoteAmount ||
+        newResult.evaluationAmount != oldResult.evaluationAmount) {
+        console.log(`Changes detected in ${newResult.name}`)
+        callWebhook(user?.webhook || "", `**Nouvelle note en ${newResult.name} est disponible**`)
+      }
+    }
+  }
+  catch (e) {
+    fs.writeFileSync('result.json', '[]')
+  }
+
+  fs.writeFileSync('result.json', JSON.stringify([...resultCurrent], null, 2))
 
   await browser.close();
 }

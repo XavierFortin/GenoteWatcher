@@ -11,7 +11,7 @@ const coursePageParser = async (page: Page): Promise<CoursePage> => {
 
   let nameEl = await page.waitForSelector('h1');
   let name = await nameEl?.evaluate(el => el?.textContent);
-  name?.split(":")[0].trim();
+  name = name?.split(":")[0].trim();
 
   let notesText = await Promise.all(notes.map(async (note) => {
     return await page.evaluate(el => el.textContent, note);
