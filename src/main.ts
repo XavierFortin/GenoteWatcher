@@ -11,7 +11,7 @@ function getInformations(): Credentials {
 }
 
 async function navigateToGenote(page: Page, user: Credentials) {
-  if (user.email === undefined || user.password === undefined) {
+  if (user.email === undefined || user.password === undefined || user.webhook === undefined) {
     throw new Error('You must provide an email and a password in the .env file')
   }
 
@@ -35,7 +35,12 @@ async function navigateToGenote(page: Page, user: Credentials) {
 async function main() {
   let user: Credentials = getInformations()
   // Launch the browser and open a new blank page
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({
+    headless: true,
+    // LINUX ONLY
+    //executablePath: '/usr/bin/chromium-browser',
+    args: ['--no-sandbox', '--disable-setuid-sandbox']
+  });
   const page = await browser.newPage();
   await page.setViewport({ width: 1080, height: 1024 });
 
