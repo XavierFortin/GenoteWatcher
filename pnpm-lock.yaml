@@ -13,6 +13,9 @@ dependencies:
     version: 22.7.1(typescript@5.4.5)
 
 devDependencies:
+  '@types/node':
+    specifier: ^20.12.7
+    version: 20.12.7
   typescript:
     specifier: ^5.4.5
     version: 5.4.5
@@ -68,8 +71,6 @@ packages:
     requiresBuild: true
     dependencies:
       undici-types: 5.26.5
-    dev: false
-    optional: true
 
   /@types/yauzl@2.10.3:
     resolution: {integrity: sha512-oJoftv0LSuaDZE3Le4DbKX+KS9G36NzOeSap90UIK0yMA/NhKJhqlSGtNDORNRaIbQfzjXDrQa0ytJ6mNRGz/Q==}
@@ -765,8 +766,6 @@ packages:
   /undici-types@5.26.5:
     resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
     requiresBuild: true
-    dev: false
-    optional: true
 
   /universalify@2.0.1:
     resolution: {integrity: sha512-gptHNQghINnc/vTGIk0SOFGFNXw7JVrlRUtConJRlvaw6DuX0wO5Jeko9sWrMBhh+PsYAZ7oXAiOnf/UKogyiw==}

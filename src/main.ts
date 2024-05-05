@@ -3,7 +3,7 @@ import 'dotenv/config'
 import Credentials from './types/credentials';
 import parseArchives from './parsers/archives';
 import parseCurrent from './parsers/current';
-import fs from 'fs'
+import { readFileSync, writeFileSync } from 'fs'
 import { callWebhook } from './utils/discordInteractions';
 
 function getInformations(): Credentials {
@@ -35,7 +35,7 @@ async function navigateToGenote(page: Page, user: Credentials) {
 async function main() {
   let user: Credentials = getInformations()
   // Launch the browser and open a new blank page
-  const browser = await puppeteer.launch({ headless: false });
+  const browser = await puppeteer.launch();
   const page = await browser.newPage();
   await page.setViewport({ width: 1080, height: 1024 });
 
@@ -49,8 +49,9 @@ async function main() {
   }
 
   try {
-    let file = fs.readFileSync('result.json');
+    let file = readFileSync('result.json');
     let oldResults = JSON.parse(file.toString())
+
     for (let i = 0; i < resultCurrent.length; i++) {
       let newResult = resultCurrent[i];
       let oldResult = oldResults[i];
@@ -59,14 +60,13 @@ async function main() {
         newResult.evaluationAmount != oldResult.evaluationAmount) {
         console.log(`Changes detected in ${newResult.name}`)
         callWebhook(user?.webhook || "", `**Nouvelle note en ${newResult.name} est disponible**`)
+        writeFileSync('result.json', JSON.stringify([...resultCurrent], null, 2))
       }
     }
   }
   catch (e) {
-    fs.writeFileSync('result.json', '[]')
+    writeFileSync('result.json', '[]')
   }
-
-  fs.writeFileSync('result.json', JSON.stringify([...resultCurrent], null, 2))
 
   await browser.close();
 }

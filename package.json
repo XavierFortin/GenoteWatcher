@@ -4,10 +4,12 @@
     "puppeteer": "^22.7.1"
   },
   "devDependencies": {
+    "@types/node": "^20.12.7",
     "typescript": "^5.4.5"
   },
   "scripts": {
-    "start": "ts-node main.ts",
-    "build": "tsc"
+    "build": "tsc --build",
+    "clean": "tsc --build --clean",
+    "start": "ts-node src/main.ts"
   }
 }
