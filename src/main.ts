@@ -52,6 +52,9 @@ async function main() {
   if (resultCurrent.length === 0) {
     resultCurrent = await parseArchives(page, 5);
   }
+  else {
+    resultCurrent = resultCurrent.sort((a, b) => a.name.localeCompare(b.name))
+  }
 
   try {
     let file = readFileSync('result.json');
