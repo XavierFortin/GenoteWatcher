@@ -1,4 +1,4 @@
-import { CourseRow } from "../types/courseRow";
+import { CourseRow } from "../types/courseRow.ts";
 
 export const shallowEqual = (object1: CourseRow, object2: CourseRow): boolean => {
   const keys1 = Object.keys(object1);
@@ -8,8 +8,8 @@ export const shallowEqual = (object1: CourseRow, object2: CourseRow): boolean =>
     return false;
   }
 
-  for (let key of keys1) {
-    if (object1[key] !== object2[key]) {
+  for (const key of keys1) {
+    if (object1[key as keyof CourseRow] !== object2[key as keyof CourseRow]) {
       return false;
     }
   }

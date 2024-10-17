@@ -1,10 +1,12 @@
 import puppeteer, { Page } from 'puppeteer';
 import 'dotenv/config'
-import Credentials from './types/credentials';
-import parseArchives from './parsers/archives';
-import parseCurrent from './parsers/current';
-import { readFileSync, writeFileSync } from 'fs'
-import { callWebhook } from './utils/discordInteractions';
+import Credentials from "./types/credentials.ts";
+import parseArchives from "./parsers/archives.ts";
+import parseCurrent from "./parsers/current.ts";
+import { readFileSync, writeFileSync } from 'node:fs'
+import { callWebhook } from "./utils/discordInteractions.ts";
+import process from "node:process";
+
 
 function getInformations(): Credentials {
   return { email: process.env.EMAIL, password: process.env.PASSWORD, webhook: process.env.WEBHOOK_URL }
@@ -53,16 +55,16 @@ async function main() {
     resultCurrent = await parseArchives(page, 5);
   }
   else {
-    resultCurrent = resultCurrent.sort((a, b) => a.name.localeCompare(b.name))
+    resultCurrent = resultCurrent.sort((a: { name: string; }, b: { name: any; }) => a.name.localeCompare(b.name))
   }
 
   try {
-    let file = readFileSync('result.json');
-    let oldResults = JSON.parse(file.toString())
+    const file = readFileSync('result.json');
+    const oldResults = JSON.parse(file.toString())
 
     for (let i = 0; i < resultCurrent.length; i++) {
-      let newResult = resultCurrent[i];
-      let oldResult = oldResults[i];
+      const newResult = resultCurrent[i];
+      const oldResult = oldResults[i];
 
       if (newResult.emptyNoteAmount != oldResult.emptyNoteAmount ||
         newResult.evaluationAmount != oldResult.evaluationAmount) {

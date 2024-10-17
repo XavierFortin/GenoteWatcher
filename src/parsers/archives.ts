@@ -1,6 +1,6 @@
 import { Page } from "puppeteer";
-import coursePageParser from "./coursePage";
-import { CourseRow } from "../types/courseRow";
+import coursePageParser from "./coursePage.ts";
+import { CourseRow } from "../types/courseRow.ts";
 
 const parseArchives = async (page: Page, take: number): Promise<CourseRow[]> => {
   let table = (await page.$$('table'))[2];

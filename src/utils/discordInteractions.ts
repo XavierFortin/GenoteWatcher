@@ -1,6 +1,4 @@
-import { request } from 'https'
-
-
+import { request } from "node:https";
 
 export const callWebhook = async (url: string, courseName: string) => {
   let data = {
