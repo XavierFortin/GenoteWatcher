@@ -3,18 +3,18 @@ import coursePageParser from "./coursePage.ts";
 import { CourseRow } from "../types/courseRow.ts";
 
 const parseCurrents = async (page: Page): Promise<CourseRow[]> => {
-  let table = (await page.$$('table'))[1];
+  const table = (await page.$$('table'))[1];
 
-  let nbEvaluations = await table.$$eval('tbody td:nth-child(5)', (evaluations) => { return evaluations.map(evaluation => evaluation.textContent) });
-  let links = await table.$$eval('td a', (links) => { return links.map(link => link.getAttribute('href')) });
+  const nbEvaluations = await table.$$eval('tbody td:nth-child(5)', (evaluations) => { return evaluations.map(evaluation => evaluation.textContent) });
+  const links = await table.$$eval('td a', (links) => { return links.map(link => link.getAttribute('href')) });
 
-  let row: CourseRow[] = [];
+  const row: CourseRow[] = [];
   for (let i = 0; i < links.length; i++) {
-    let link = links[i];
-    let nbEvaluation = nbEvaluations[i];
+    const link = links[i];
+    const nbEvaluation = nbEvaluations[i];
     if (!link || !nbEvaluation) continue;
     page.goto(link);
-    let pageResult = await coursePageParser(page);
+    const pageResult = await coursePageParser(page);
 
     row.push({
       name: pageResult.name,

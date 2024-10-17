@@ -4,9 +4,7 @@
     "puppeteer": "^22.7.1"
   },
   "devDependencies": {
-    "@types/node": "^20.12.7",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.4.5"
+    "@types/node": "^20.12.7"
   },
   "scripts": {
     "build": "tsc --build",

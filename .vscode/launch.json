@@ -5,6 +5,13 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "command": "deno run --allow-net --allow-read --allow-write --allow-env --allow-sys src/main.ts",
+      "name": "Deno run",
+      "request": "launch",
+      "type": "node-terminal"
+    },
+
+    {
       "command": "pn start",
       "name": "Run npm start",
       "request": "launch",

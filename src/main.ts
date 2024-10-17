@@ -35,7 +35,8 @@ async function navigateToGenote(page: Page, user: Credentials) {
 }
 
 async function main() {
-  let user: Credentials = getInformations()
+  console.log("Starting the process")
+  const user: Credentials = getInformations()
   // Launch the browser and open a new blank page
   const browser = await puppeteer.launch({
     headless: true,
@@ -55,7 +56,7 @@ async function main() {
     resultCurrent = await parseArchives(page, 5);
   }
   else {
-    resultCurrent = resultCurrent.sort((a: { name: string; }, b: { name: any; }) => a.name.localeCompare(b.name))
+    resultCurrent = resultCurrent.sort((a: { name: string; }, b: { name: string; }) => a.name.localeCompare(b.name))
   }
 
   try {
@@ -75,6 +76,7 @@ async function main() {
     }
   }
   catch (e) {
+    console.error(e)
     writeFileSync('result.json', '[]')
   }
 
